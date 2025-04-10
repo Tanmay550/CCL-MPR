@@ -75,6 +75,32 @@ def decrypt_message():
         print("Missing message_id or shared_key")
         return jsonify({'error': 'Missing message_id or shared_key'}), 400
 
+    s3_key = f"encrypted/{message_id}.json"
+    try:
+        obj = s3.get_object(Bucket=BUCKET_NAME, Key=s3_key)
+    except Exception as e:
+        print(f"S3 object not found: {s3_key}")
+        return jsonify({'error': 'Message not found'}), 400
+
+    enc_data = json.loads(obj['Body'].read().decode('utf-8'))
+    print("Expected key:", enc_data.get('shared_key'))
+    print("Provided key:", shared_key)
+
+    if shared_key != enc_data.get('shared_key'):
+        print("Key mismatch")
+        return jsonify({'error': 'Invalid shared key'}), 400
+
+    try:
+        iv = base64.b64decode(enc_data['iv'])
+        cipher_text = base64.b64decode(enc_data['cipher_text'])
+        cipher = AES.new(shared_key.encode('utf-8'), AES.MODE_CFB, iv)
+        plain_text = cipher.decrypt(cipher_text).decode('utf-8')
+        return jsonify({'plain_text': plain_text}), 200
+    except Exception as e:
+        print("Decryption error:", e)
+        return jsonify({'error': 'Decryption failed'}), 400
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
