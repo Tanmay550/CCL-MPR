@@ -4,14 +4,15 @@ from Crypto.Cipher import AES
 from Crypto.Protocol.KDF import PBKDF2
 from Crypto.Random import get_random_bytes
 import base64, uuid, boto3, json
+import os
 from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
 
 # AWS S3 Configuration (make sure to store these in environment variables in production)
-AWS_ACCESS_KEY = 'AKIA4VDBMBF3HSC4QIHQ'
-AWS_SECRET_KEY = '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'
+AWS_ACCESS_KEY = os.getenv('AWS_ACCESS_KEY')
+AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
 BUCKET_NAME = 'tanmaysarode2203145bucket'
 
 s3 = boto3.client('s3',
