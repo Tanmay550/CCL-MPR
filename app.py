@@ -75,7 +75,7 @@ def decrypt_message():
         print("Missing message_id or shared_key")
         return jsonify({'error': 'Missing message_id or shared_key'}), 400
 
-    s3_key = f"encrypted/{message_id}.json"
+    s3_key = f"messages/{message_id}.json"
     try:
         obj = s3.get_object(Bucket=BUCKET_NAME, Key=s3_key)
     except Exception as e:
