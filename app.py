@@ -54,16 +54,21 @@ def home():
 def encrypt():
     try:
         data = request.json
+        print("Received data:", data)
+
         shared_key = PBKDF2(data['shared_key'], b'salt', dkLen=32)
         cipher = AES.new(shared_key, AES.MODE_EAX)
         cipher_text, tag = cipher.encrypt_and_digest(data['text'].encode())
 
         message_id = str(uuid.uuid4())
+        print(f"Generated message_id: {message_id}")
         upload_to_s3(message_id, cipher_text, cipher.nonce)
 
         return jsonify({"message_id": message_id})
     except Exception as e:
+        print("Encryption error:", e)  # THIS will show the real problem
         return jsonify({"error": str(e)}), 400
+
 
 
 @app.route('/decrypt', methods=['POST'])
