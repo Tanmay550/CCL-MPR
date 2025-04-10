@@ -39,6 +39,11 @@ def download_from_s3(message_id):
         base64.b64decode(content["nonce"])
     )
 
+
+@app.route('/')
+def home():
+    return 'Hello from Flask on EC2!'
+
 @app.route('/encrypt', methods=['POST'])
 def encrypt():
     data = request.json
