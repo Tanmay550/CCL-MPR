@@ -1,0 +1,4 @@
+Flask
+gunicorn
+pycryptodome
+psycopg2-binary

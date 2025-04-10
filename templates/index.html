@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head><title>Secure Text Transfer</title></head>
+<body>
+<h2>Secure Text Sender</h2>
+<textarea id="text" placeholder="Secret message"></textarea><br>
+<input id="key" placeholder="Shared key"><br>
+<button onclick="encrypt()">Encrypt & Upload</button>
+<p id="messageId"></p>
+
+<h2>Receiver</h2>
+<input id="recv_id" placeholder="Message ID"><br>
+<input id="recv_key" placeholder="Shared key"><br>
+<button onclick="decrypt()">Decrypt</button>
+<p id="output"></p>
+
+<script>
+async function encrypt() {
+  const text = document.getElementById('text').value;
+  const key = document.getElementById('key').value;
+  const res = await fetch('http://YOUR_EC2_PUBLIC_IP:5000/encrypt', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ text, shared_key: key })
+  });
+  const data = await res.json();
+  document.getElementById('messageId').innerText = 'Message ID: ' + data.message_id;
+}
+
+async function decrypt() {
+  const id = document.getElementById('recv_id').value;
+  const key = document.getElementById('recv_key').value;
+  const res = await fetch('http://YOUR_EC2_PUBLIC_IP:5000/decrypt', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ message_id: id, shared_key: key })
+  });
+  const data = await res.json();
+  document.getElementById('output').innerText = 'Decrypted: ' + data.plain_text;
+}
+</script>
+</body>
+</html>
