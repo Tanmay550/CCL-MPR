@@ -44,6 +44,7 @@ def download_from_s3(message_id):
         base64.b64decode(content["nonce"])
     )
 
+
 @app.route('/')
 def home():
     return '🔐 Secure Flask Encryption API is running on EC2!'
@@ -63,42 +64,31 @@ def encrypt():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+
 @app.route('/decrypt', methods=['POST'])
 def decrypt_message():
-    data = request.get_json()
-    print("Incoming decrypt request:", data)
-
-    message_id = data.get('message_id')
-    shared_key = data.get('shared_key')
-
-    if not message_id or not shared_key:
-        print("Missing message_id or shared_key")
-        return jsonify({'error': 'Missing message_id or shared_key'}), 400
-
-    s3_key = f"messages/{message_id}.json"
     try:
-        obj = s3.get_object(Bucket=BUCKET_NAME, Key=s3_key)
-    except Exception as e:
-        print(f"S3 object not found: {s3_key}")
-        return jsonify({'error': 'Message not found'}), 400
+        data = request.get_json()
+        print("Incoming decrypt request:", data)
 
-    enc_data = json.loads(obj['Body'].read().decode('utf-8'))
-    print("Expected key:", enc_data.get('shared_key'))
-    print("Provided key:", shared_key)
+        message_id = data.get('message_id')
+        user_key = data.get('shared_key')
 
-    if shared_key != enc_data.get('shared_key'):
-        print("Key mismatch")
-        return jsonify({'error': 'Invalid shared key'}), 400
+        if not message_id or not user_key:
+            return jsonify({'error': 'Missing message_id or shared_key'}), 400
 
-    try:
-        iv = base64.b64decode(enc_data['iv'])
-        cipher_text = base64.b64decode(enc_data['cipher_text'])
-        cipher = AES.new(shared_key.encode('utf-8'), AES.MODE_CFB, iv)
+        cipher_text, nonce = download_from_s3(message_id)
+
+        shared_key = PBKDF2(user_key, b'salt', dkLen=32)
+        cipher = AES.new(shared_key, AES.MODE_EAX, nonce=nonce)
         plain_text = cipher.decrypt(cipher_text).decode('utf-8')
+
         return jsonify({'plain_text': plain_text}), 200
+
     except Exception as e:
         print("Decryption error:", e)
         return jsonify({'error': 'Decryption failed'}), 400
+
 
 
 
