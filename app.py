@@ -64,18 +64,17 @@ def encrypt():
         return jsonify({"error": str(e)}), 400
 
 @app.route('/decrypt', methods=['POST'])
-def decrypt():
-    try:
-        data = request.json
-        shared_key = PBKDF2(data['shared_key'], b'salt', dkLen=32)
-        cipher_text, nonce = download_from_s3(data['message_id'])
+def decrypt_message():
+    data = request.get_json()
+    print("Incoming decrypt request:", data)
 
-        cipher = AES.new(shared_key, AES.MODE_EAX, nonce=nonce)
-        plain_text = cipher.decrypt(cipher_text).decode()
+    message_id = data.get('message_id')
+    shared_key = data.get('shared_key')
 
-        return jsonify({"plain_text": plain_text})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
+    if not message_id or not shared_key:
+        print("Missing message_id or shared_key")
+        return jsonify({'error': 'Missing message_id or shared_key'}), 400
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
