@@ -1,0 +1,353 @@
+<html project="Secure Text Transfer" file="index.html" type="html">
+
+<html>
+<head>
+  <title>Secure Text Transfer</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2a9d8f;
+      --primary-dark: #287271;
+      --secondary: #e9c46a;
+      --dark: #1a1a1a;
+      --light: #f8f9fa;
+      --gray: #6c757d;
+      --success: #4caf50;
+      --border-radius: 8px;
+    }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background-color: #264653;
+  color: var(--light);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  background-color: var(--dark);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.left-panel {
+  flex: 1;
+  padding: 40px;
+}
+
+.right-panel {
+  flex: 1;
+  background-color: var(--primary);
+  padding: 40px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 40px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+textarea, input {
+  width: 100%;
+  padding: 12px 16px;
+  background-color: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: var(--border-radius);
+  color: var(--light);
+  font-size: 16px;
+  transition: all 0.3s;
+  margin-bottom: 15px;
+}
+
+textarea:focus, input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(42, 157, 143, 0.2);
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+button {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+button:hover {
+  background-color: var(--primary-dark);
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 2px solid var(--light);
+}
+
+.btn-outline:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.message-display {
+  margin-top: 16px;
+  padding: 12px;
+  background-color: #2a2a2a;
+  border-radius: var(--border-radius);
+  word-break: break-all;
+}
+
+.message-display strong {
+  color: var(--secondary);
+}
+
+.toggle-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: white;
+}
+
+.quote {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  position: relative;
+  padding-left: 24px;
+}
+
+.quote::before 
+{
+  content: "";
+  font-size: 64px;
+  position: absolute;
+  left: -10px;
+  top: -20px;
+  opacity: 0.5;
+}
+
+.quote-author {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.quote-title {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.card {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: var(--dark);
+  padding: 24px;
+  border-radius: 12px;
+  margin-top: auto;
+}
+
+.card-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.card-text {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.navigation {
+  display: flex;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.nav-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.nav-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  
+  .left-panel, .right-panel {
+    padding: 24px;
+  }
+}
+
+
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="left-panel">
+      <h1 class="app-title">SecureText</h1>
+  
+  <div id="sender-section">
+    <h2>Send Secure Message</h2>
+    <textarea id="text" placeholder="Secret message"></textarea>
+    <input id="key" type="password" placeholder="Shared key">
+    <button onclick="encrypt()">Encrypt & Upload</button>
+    <p id="messageId" class="message-display hidden"><strong>Message ID:</strong> <span id="message-id-value"></span></p>
+    
+    <div class="toggle-section">
+      <button id="toggle-receiver" class="btn-outline">Switch to Receiver</button>
+    </div>
+  </div>
+  
+  <div id="receiver-section" class="hidden">
+    <h2>Decrypt Message</h2>
+    <input id="recv_id" placeholder="Message ID">
+    <input id="recv_key" type="password" placeholder="Shared key">
+    <button onclick="decrypt()">Decrypt</button>
+    <p id="output" class="message-display hidden"><strong>Decrypted:</strong> <span id="output-value"></span></p>
+    
+    <div class="toggle-section">
+      <button id="toggle-sender" class="btn-outline">Switch to Sender</button>
+    </div>
+  </div>
+</div>
+
+<div class="right-panel">
+  <h2>Secure Text Transfer </h2>
+  
+  <div class="quote">
+    <p><strong>Diffie-Hellman Key Exchange</strong> is a method that allows two parties to securely share a secret key over a public network. Instead of sending the key directly, both parties use mathematical operations based on large prime numbers and modular arithmetic to independently generate the same shared key. This key can then be used for encrypted communication. The beauty is: even if someone is watching the entire exchange, they still can’t figure out the secret key!</p>
+  </div>
+  
+  
+  
+  <div class="card">
+    <h3 class="card-title">Secure your communications </h3>
+    <p class="card-text">
+     This project demonstrates secure text transfer.
+    </p>
+  </div>
+</div>
+
+
+ </div>  
+<script>
+    // Toggle between sender and receiver sections
+    document.getElementById('toggle-receiver').addEventListener('click', function() {
+      document.getElementById('sender-section').classList.add('hidden');
+      document.getElementById('receiver-section').classList.remove('hidden');
+    });
+    
+    document.getElementById('toggle-sender').addEventListener('click', function() {
+      document.getElementById('receiver-section').classList.add('hidden');
+      document.getElementById('sender-section').classList.remove('hidden');
+    });
+    
+    async function encrypt() {
+      const text = document.getElementById('text').value;
+      const key = document.getElementById('key').value;
+      
+      if (!text || !key) {
+        alert('Please enter both message and key');
+        return;
+      }
+      
+      try {
+        const res = await fetch('http://98.81.238.42:5000/encrypt', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ text, shared_key: key })
+        });
+        
+        const data = await res.json();
+        document.getElementById('message-id-value').innerText = data.message_id;
+        document.getElementById('messageId').classList.remove('hidden');
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to encrypt message. Please try again.');
+      }
+    }
+
+    async function decrypt() {
+      const id = document.getElementById('recv_id').value;
+      const key = document.getElementById('recv_key').value;
+      
+      if (!id || !key) {
+        alert('Please enter both message ID and key');
+        return;
+      }
+      
+      try {
+        const res = await fetch('http://98.81.238.42:5000/decrypt', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ message_id: id, shared_key: key })
+        });
+        
+        const data = await res.json();
+        document.getElementById('output-value').innerText = data.plain_text;
+        document.getElementById('output').classList.remove('hidden');
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to decrypt message. Please check your message ID and key.');
+      }
+    }
+  </script>
+  </body>
+</html>
+</html>
