@@ -11,6 +11,7 @@ load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://gooduiforcclmprdiffehellman.s3-website-us-east-1.amazonaws.com"}})
 
 # AWS S3 Configuration (make sure to store these in environment variables in production)
 AWS_ACCESS_KEY = os.getenv('AWS_ACCESS_KEY')
